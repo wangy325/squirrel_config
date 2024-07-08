@@ -1,0 +1,102 @@
+# User double_pinyin_flypy config file.
+# encoding utf-8
+
+# 使用「plum」安装的补丁
+__patch:
+# Rx: emoji:customize:schema=double_pinyin_flypy {  #emoji支持
+  - patch/+:
+      __include: emoji_suggestion:/patch
+# }
+# Rx: BlindingDark/rime-easy-en:customize:schema=double_pinyin_flypy 
+#中英文混输 Typing English when using Chinese input-method
+      __include: easy_en:/patch
+      easy_en/enable_sentence: false   # 避免矫枉过正，把所有的字母组合当作英文作为候选词
+
+patch:
+  schema/name: 小鹤双拼
+  switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 英文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  - name: simplification
+    reset: 1
+    states: [ 漢字, 汉字 ]
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+  engine/translators/+:
+    - lua_translator@date_translator         # 日期候选 2024年06月04日
+    - lua_translator@time_translator         # 时间候选 23:59:03
+    # 还有一些函数可以调用，参见rime.lua
+    - table_translator@custom_phrase         # 自定义短语
+  # 一定要这样连写，不能拆分！否则配置不生效。squirrel v0.15.2 
+  translator/preedit_format: []         #双拼显示双拼码，不解析为全拼
+  # translator/dictionary: luna_pinyin
+  translator/dictionary: luna_pinyin.extended #使用拓充词库
+
+  #自定义符号上屏
+  punctuator:
+    import_preset: symbols    #自定义表情输入 更多参见symbols.custom.yaml
+  recognizer:
+    patterns:
+      wangy325: "^wangy[0-9]+$"     # 直接输入我的id，而不需要先上屏wangy
+      punct: "^/([a-z]+|[0-9]0?)$"  # 自定义符号上屏
+      email: "^[A-Za-z][-_.0-9A-Za-z]*@.*$"   # email快速上屏
+      uppercase: "[A-Z][-_+.'0-9A-Za-z]*$"    # 大写英文直接上屏
+      url: "^(www[.]|https?:|ftp[.:]|mailto:|file:).*$|^[a-z]+[.].+$"   #网址快速上屏
+  ###使用自定义词典 custom_phrase.txt 
+  custom_phrase: 
+    dictionary: ""
+    user_dict: custom_phrase 
+    db_class: stabledb
+    enable_completion: false    #关闭逐键提示，精确匹配输入码的候选字即可
+    # enable_sentence: false      #关闭输入法连打，此配置对双拼方案无效
+    initial_quality: 1
+  # "engine/translators/@5": table_translator@custom_phrase
+
+  # 模糊音
+  speller/algebra:
+    - erase/^xx$/                      # 第一行保留
+    #- derive/^([zcs])h/$1/             # zh, ch, sh => z, c, s
+    #- derive/^([zcs])([^h])/$1h$2/     # z, c, s => zh, ch, sh
+    # - derive/([aei])n$/$1ng/            # an => ang en => eng, in => ing
+    # - derive/([aei])ng$/$1n/            # ang => an eng => en, ing => in 
+    # - derive/([u])an$/$1ang/            # uan => uang
+    # - derive/([u])ang$/$1an/            # uang => uan
+    #小鹤双拼使用模糊音时，需要将模糊音的配置放在双拼键映射之前，
+    #因此只能选择覆盖默认配置
+    # - erase/^xx$/
+    - derive/^([jqxy])u$/$1v/
+    - derive/^([aoe])([ioun])$/$1$1$2/
+    - xform/^([aoe])(ng)?$/$1$1$2/
+    - xform/iu$/Q/
+    - xform/(.)ei$/$1W/
+    - xform/uan$/R/
+    - xform/[uv]e$/T/
+    - xform/un$/Y/
+    - xform/^sh/U/
+    - xform/^ch/I/
+    - xform/^zh/V/
+    - xform/uo$/O/
+    - xform/ie$/P/
+    - xform/i?ong$/S/
+    - xform/ing$|uai$/K/
+    - xform/(.)ai$/$1D/
+    - xform/(.)en$/$1F/
+    - xform/(.)eng$/$1G/
+    - xform/[iu]ang$/L/
+    - xform/(.)ang$/$1H/
+    - xform/ian$/M/
+    - xform/(.)an$/$1J/
+    - xform/(.)ou$/$1Z/
+    - xform/[iu]a$/X/
+    - xform/iao$/N/
+    - xform/(.)ao$/$1C/
+    - xform/ui$/V/
+    - xform/in$/B/
+    - xlit/QWRTYUIOPSDFGHJKLZXCVBNM/qwrtyuiopsdfghjklzxcvbnm/
+    #- abbrev/^(.).+$/$1/
+  # 分尖團後 v => ü 的改寫條件也要相應地擴充：
+  #'translator/preedit_format':
+  #  - "xform/([nljqxyzcs])v/$1ü/"

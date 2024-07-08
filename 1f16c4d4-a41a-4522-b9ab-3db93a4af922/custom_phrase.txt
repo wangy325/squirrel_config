@@ -1,0 +1,14 @@
+# 自定义短语词典
+# 同詞典文件一樣，碼表各字段以製表符（Tab）分隔
+# 順序爲：文字、編碼、權重（決定重碼的次序、可選）
+马上到	msd
+鼠须管  sxg
+°C	wd
+WTF！	wtf	1
+弄啥嘞	wtf	10
+What the fuck!	wtf	5
+wangy325@qq.com	qmail
+wangy1105325@gmail.com	gmail	3
+lavawangy@gmail.com	gmail	5
+wangy1105@icloud.com	amail
+GPT-3.5-turbo	gptt

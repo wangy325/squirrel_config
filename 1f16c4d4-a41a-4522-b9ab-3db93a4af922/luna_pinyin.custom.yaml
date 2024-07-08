@@ -1,0 +1,29 @@
+# Rime schema
+# encoding: utf-8
+
+# emoji与混输
+__patch:
+  - patch/+:
+      __include: emoji_suggestion:/patch
+      __include: easy_en:/patch
+      easy_en/enable_sentence: false 
+
+patch:
+  # lua函数与拓展词典
+  engine/translators/+:
+    - lua_translator@date_translator        
+    - lua_translator@time_translator        
+    - table_translator@custom_phrase      
+  # translator/dictionary: luna_pinyin
+  translator/dictionary: luna_pinyin.extended 
+
+  #自定义符号上屏
+  punctuator:
+    import_preset: symbols   
+  recognizer:
+    patterns:
+      wangy325: "^wangy[0-9]+$"     
+      punct: "^/([a-z]+|[0-9]0?)$"  
+      email: "^[A-Za-z][-_.0-9A-Za-z]*@.*$"   
+      uppercase: "[A-Z][-_+.'0-9A-Za-z]*$"    
+      url: "^(www[.]|https?:|ftp[.:]|mailto:|file:).*$|^[a-z]+[.].+$"   
