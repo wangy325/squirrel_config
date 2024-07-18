@@ -1,3 +1,7 @@
+
+
+这是一份自用squirrel输入方案的配置备份。
+
 ### 如何使用
 
 - 下载或者clone项目
@@ -9,11 +13,27 @@
     rm -rf *
     cp -r squirrel_config/1hbx/* .
     ```
-- 修改自动备份配置 `installation.yaml`
+- 修改或者删除自动备份配置
+    修改`installation.yaml`
     ```yaml
+    # 或者删除以下行
     sync_dir: '/your/backup/dir'
     ```
 - 重新部署
+
+### 已经配置的功能
+
+- 明月全拼
+- 小鹤双拼
+- 快速输入emoji
+- 符号快速上屏
+- 中英文混输
+- 自定义词典
+- 搜狗拓展词库
+- luna脚本（快速输入日期时间等）
+- 配置备份
+- 自定义皮肤
+- ...
 
 ### 参考
 
